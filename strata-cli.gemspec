@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "CLI to for the Strata Semantic Analytics System."
   spec.description = "CLI tool to interact with your Strata servers. Create new projects and deploy them."
   spec.homepage = "https://strata.size"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.4.4"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/stratasite/strata-cli.git"

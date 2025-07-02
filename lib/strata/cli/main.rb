@@ -12,11 +12,9 @@ module Strata
     "bigquery",
     "redshift"
   ]
-  
+
   module CLI
-
     class Main < Thor
-
       def self.exit_on_failure?
         true
       end
@@ -38,8 +36,6 @@ module Strata
         out = " SUPPORTED ADAPTERS: \n\t#{ADAPTERS.join("\n\t")}"
         say out, :magenta
       end
-
     end
   end
 end
-

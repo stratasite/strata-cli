@@ -3,6 +3,7 @@
 require_relative "cli/version"
 require_relative "cli/configuration"
 require_relative "cli/main"
+require_relative "cli/utils"
 
 module Strata
   module CLI
