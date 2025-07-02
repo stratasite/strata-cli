@@ -1,0 +1,34 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display namem of this datasource
+  name: Databricks Lakehouse
+  # Optional description to provide more information in the UI
+  description: Our awesome Databricks Lakehouse platform
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # priortize a datasource when multiple can handle the request.
+  tier: warm
+  # A valid supported adapter
+  adapter: databricks
+  
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 3600
+  protocol: https
+  host: mydomain.cloud.databricks.com
+  ssl: true 
+  http_path: /sql/1.0/warehouses/warehouse_id
+  catalog: DATABRICKS_CATALOG
+  schema: DATABRICKS_SCHEMA
+  
+  # Auth modes: oauth, personal_access_token
+  auth_mode: personal_access_token
+  # You can set username here. But to set password/token securely please run:
+  # `strata ds auth <%= @ds_key %>`
+  # This command will save your credentials to the .strata global or local file.
+  # These files are default ignored in .gitignore
+  # username:
+  
+  # Extra connection properties will forward these along when
+  # connecting to your databricks server.
+  # extra_connection_params:
+  #   application: ${strata_client_name} 
+  #   session_timeout: 3600

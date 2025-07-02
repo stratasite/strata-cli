@@ -1,0 +1,30 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display namem of this datasource
+  name: Postgres DB
+  # Optional description to provide more information in the UI
+  # description: My awesome data warehouse
+  
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # priortize a datasource when multiple can handle the request.
+  tier: cold
+  # A valid supported adapter
+  adapter: postgres
+  
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 3600
+  host: localhost
+  # port: 5432 
+  # ssl: false 
+  # sslmode: prefer
+  # schema: public
+  
+  # You can set username here. But to set password securely please run:
+  # `strata ds auth <%= @ds_key %>`
+  # This command will save your credentials to the .strata global or local file.
+  # username:
+  
+  # Extra connection properties will forward these along when
+  # connecting to your druid server.
+  # extra_connection_params:
+  #   application_name: ${strata_client_name} 

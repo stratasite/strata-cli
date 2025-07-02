@@ -1,0 +1,37 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display namem of this datasource
+  name: Trino DWH
+  # Optional description to provide more information in the UI
+  description: Isolated instance to provide exclusive access to CS BPO vendors
+
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # priortize a datasource when multiple can handle the request.
+  tier: warm
+  # A valid supported adapter
+  adapter: trino
+  
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 600
+  host: trino.mydomain.net
+  port: 7004
+  ssl: true 
+  # sslmode: prefer
+  catalog: wh_catalog
+  # Default schema when connecting. Tables can have fully qualified names
+  # to use alternative schema like: othercat.otherschema.table_name
+  schema: dwh
+  
+  # You can set username here. But to set password securely please run:
+  # `strata ds auth <%= @ds_key %>`
+  # This command will save your credentials to the .strata global or local file.
+  # username:
+  
+  # Extra connection properties will forward these along when
+  # connecting to your druid server.
+  # extra_connection_params:
+  #   source: ${strata_client_name} 
+  #   clientInfo:
+  #     version: ${strata_client_version}
+  #     actualUser: ${strata_current_user_name}
+

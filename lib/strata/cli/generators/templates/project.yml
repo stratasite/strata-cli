@@ -1,0 +1,15 @@
+# This file will control how this project is configured on your
+# target Strata servers.
+
+
+# Display name of the Project. Must be Unique per Strata instance.
+name: <%= name %>
+
+# UID is a URL friendly ID used in API requests for the project. 
+# Required and must be Unique
+uid: <%= uid %>
+description: Your projects description
+
+# Server side Project ID. This will be automatically
+# set on first deployment. Do not change.
+id: NOT_DEPLOYED

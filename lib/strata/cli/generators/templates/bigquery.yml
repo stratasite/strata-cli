@@ -1,0 +1,32 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display namem of this datasource
+  name: Google BigQuery
+  # Optional description to provide more information in the UI
+  description: Our awesome Google BigQuery data warehouse
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # priortize a datasource when multiple can handle the request.
+  tier: warm
+  # A valid supported adapter
+  adapter: bigquery
+  
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 3600
+  project: YOUR_GCP_PROJECT_ID
+  dataset: YOUR_BIGQUERY_DATASET
+  location: US
+  
+  # Auth modes: service_account, oauth, application_default
+  auth_mode: service_account
+  # You can set service_account_path here. But to set credentials securely please run:
+  # `strata ds auth <%= @ds_key %>`
+  # This command will save your credentials to the .strata global or local file.
+  # These files are default ignored in .gitignore
+  # service_account_path: /path/to/service-account.json
+  
+  # Extra connection properties will forward these along when
+  # connecting to your BigQuery instance.
+  # extra_connection_params:
+  #   application: ${strata_client_name}
+  #   maximum_bytes_billed: 1000000000
+  #   job_timeout: 3600

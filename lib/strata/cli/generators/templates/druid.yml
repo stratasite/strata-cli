@@ -1,0 +1,39 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display namem of this datasource
+  name: Customer Service Druid
+  # Optional description to provide more information in the UI
+  description: Isolated instance to provide exclusive access to CS BPO vendors
+
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # priortize a datasource when multiple can handle the request.
+  tier: hot
+  # A valid supported adapter
+  adapter: druid
+  
+  # Should be http or https
+  protocol: http
+  port: 7103
+  # ssl: false
+  
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 600
+  host: csdruid.mydomain.net
+  
+  # You can set username here. But to set password securely please run:
+  # `strata ds auth <%= @ds_key %>`
+  # This command will save your credentials to the .strata global or local file.
+  # username:
+  
+  # Extra connection properties will forward these along when
+  # connecting to your druid server.
+  # extra_connection_params:
+  #   trustStore: /path/to/trustStore
+
+  # Extra query params will forward these params when executing a 
+  # query against your druid servers:
+  # extra_query_params:
+  #   headers:
+  #     X-DRUID-AUTHOR: ${current_user_name}
+  #     X-DRUID-COMMENT: STRATA CLI
+
