@@ -1,5 +1,6 @@
 require "thor"
 require_relative "generators/project"
+require_relative "sub_commands/datasource"
 
 module Strata
   ADAPTERS = [
@@ -36,6 +37,9 @@ module Strata
         out = " SUPPORTED ADAPTERS: \n\t#{ADAPTERS.join("\n\t")}"
         say out, :magenta
       end
+
+      desc "ds", "Manage project datasources"
+      subcommand "ds", SubCommands::Datasource
     end
   end
 end
