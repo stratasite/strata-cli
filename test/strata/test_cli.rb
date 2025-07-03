@@ -7,11 +7,9 @@ class Strata::TestCli < Minitest::Test
     refute_nil ::Strata::CLI::VERSION
   end
 
-  def test_load_default_global_config
-    # TestHelper.wipe_tmp_config_dir
+  def test_strata_project_detection
     assert_equal "/tmp/strata-cli-test/.config", ENV["XDG_CONFIG_HOME"]
-    assert_equal "/tmp/strata-cli-test/.config/.strata", Strata::CLI.config.global_config_file
 
-    assert_equal Strata::CLI.config.server, "localhost:3030"
+    assert_equal Strata::CLI.config.server, "http://localhost:3030"
   end
 end

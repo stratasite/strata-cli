@@ -1,0 +1,21 @@
+# Strata Configuration file. Do not check this into git.
+#
+# Strata uses API keys to configure access. Please get your API key
+# from your Strata admins.  You can regenerate/revoke API keys as
+# needed on the server.  You must be Developer on a Project to modify
+# it or you must be System Manager to be able to create new projects.
+api_key: YOUR_STRATA_API_KEY
+#
+# Target Strata server
+server: http://localhost:3030
+#
+# Alternatively, you can configure a server per environment. In that case,
+# you will have to pass -e [Environment] option to choose the correct instance.
+# server:
+#   dev: https://dev.mydomain.net
+#   hr: https://hr.mydomain.net
+#   prod: https://prod.mydomain.net
+#
+#
+# Credentials here are stored per datasource. These credentials
+# should be set via `strata ds auth -d your_ds`

@@ -11,8 +11,8 @@ module Strata
         str.downcase.strip.gsub(/\s+/, "-").gsub(/[^\w-]/, "")
       end
 
-      def raise_error_if_not_strata!
-        unless File.exist?(File.expand_path("project.yml", Dir.pwd))
+      def exit_error_if_not_strata!
+        unless CLI.config.is_strata_project?
           Thor::Shell::Color.new.say_error "ERROR: This is not a valid strata project", :red
           exit 1
         end

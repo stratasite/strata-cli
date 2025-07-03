@@ -14,6 +14,10 @@ module Strata::CLI
         empty_directory File.join(uid, "tests")
       end
 
+      def create_strata_config_file
+        template "strata.yml", "#{uid}/.strata"
+      end
+
       def create_project_file
         template "project.yml", "#{uid}/project.yml"
       end
@@ -34,7 +38,7 @@ module Strata::CLI
       end
 
       def completion_message
-        say "Initialized Strata project: #{uid}", :green
+        say_status "Initialized Strata project: #{uid}", :green
       end
 
       private
