@@ -22,7 +22,22 @@ module Strata
 
         desc "add", "Add a new datasource for specific data warehouse adapter"
         method_option :adapter, aliases: ["a"], type: :string, required: true, desc: "One of the supported data warehouse adapters."
+        method_option :key, aliases: ["k"], type: :string, required: false, desc: "Unique key to identify this datasource"
         def add
+          adapter = options[:adapter]
+          name = options[:key]
+
+          unless DWH.adapters.key?(adapter.to_sym)
+            say "Error: '#{adapter}' is not a supported adapter.", :red
+            say "Supported adapters: #{DWH.adapters.keys.join(", ")}", :yellow
+            return
+          end
+
+          require_relative "../generators/add_ds"
+          generator = Strata::CLI::Generators::AddDs.new([adapter, name], options)
+          generator.invoke_all
+
+          say "Successfully added #{adapter} datasource configuration.", :green
         end
 
         desc "auth", "Set credentials and test connection to a datasource."

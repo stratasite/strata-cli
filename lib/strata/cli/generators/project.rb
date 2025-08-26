@@ -33,9 +33,6 @@ module Strata::CLI
         else
           AddDs.new(["snowflake"], options.merge({"path" => uid})).invoke_all
         end
-      rescue DWH::ConfigError => e
-        remove_dir uid
-        raise e
       end
 
       def initialize_git

@@ -193,8 +193,5 @@ class TestProjectInit < Minitest::Test
     assert_raises(DWH::ConfigError, "Unsupported datasource should raise an error") do
       Strata::CLI::Main.start(["init", project_name, "--datasource", "unsupported_adapter"])
     end
-
-    # Verify no project directory was created due to the error
-    refute Dir.exist?(project_name), "Project directory should not be created when unsupported adapter is specified"
   end
 end

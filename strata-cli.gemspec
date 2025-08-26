@@ -33,6 +33,11 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "thor", "~> 1.3.2"
   spec.add_dependency "dwh", "~> 0.1.0"
+  spec.add_dependency "pg"
+  spec.add_dependency "mysql2"
+  spec.add_dependency "tiny_tds"
+  spec.add_dependency "trino-client"
+  spec.add_dependency "aws-sdk-athena"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
