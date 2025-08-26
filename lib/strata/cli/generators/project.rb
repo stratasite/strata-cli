@@ -27,12 +27,15 @@ module Strata::CLI
 
         if options.key?(:datasource)
           options[:datasource].each do |ds|
-            raise "Unsupported datasource #{ds}" unless DWH.adapters?(ds.to_sym)
+            raise DWH::ConfigError, "Unsupported datasource #{ds}" unless DWH.adapter?(ds.to_sym)
             AddDs.new([ds.downcase.strip], options.merge({"path" => uid})).invoke_all
           end
         else
           AddDs.new(["snowflake"], options.merge({"path" => uid})).invoke_all
         end
+      rescue DWH::ConfigError => e
+        remove_dir uid
+        raise e
       end
 
       def initialize_git

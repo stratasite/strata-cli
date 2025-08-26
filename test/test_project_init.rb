@@ -175,4 +175,26 @@ class TestProjectInit < Minitest::Test
       assert Dir.exist?(File.join(project_name, dir)), "#{dir} directory should exist"
     end
   end
+
+  def test_snowflake_used_as_default_datasource
+    project_name = "test_project"
+
+    Strata::CLI::Main.start(["init", project_name])
+
+    # Verify snowflake datasource was added by default
+    datasources_yml = File.read(File.join(project_name, "datasources.yml"))
+    assert_includes datasources_yml, "snowflake:", "Snowflake should be used as default datasource when none specified"
+  end
+
+  def test_error_raised_for_unsupported_adapter
+    project_name = "test_project"
+
+    # Test that unsupported adapter raises an error
+    assert_raises(DWH::ConfigError, "Unsupported datasource should raise an error") do
+      Strata::CLI::Main.start(["init", project_name, "--datasource", "unsupported_adapter"])
+    end
+
+    # Verify no project directory was created due to the error
+    refute Dir.exist?(project_name), "Project directory should not be created when unsupported adapter is specified"
+  end
 end
