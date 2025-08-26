@@ -1,42 +1,45 @@
 # Datasource key should be unique in the Project
 <%= @ds_key %>:
-  # This is the display namem of this datasource
+  # This is the display name of this datasource
   name: MYDATASOURCENAME
   # Optional description to provide more information in the UI
   description: This DS is the hot tier of our Product Domain
 
   # Required. Should be one of hot, warm, or cold. Helps the Query engine
-  # priortize a datasource when multiple can handle the request.
-  tier: hot
+  # prioritize a datasource when multiple can handle the request.
+  tier: cold
 
   # A valid supported adapter
-  adapter: druid
+  adapter: sqlserver
  
   # default client name sent to the db
   client_name: Strata
 
-  # Should be http or https
-  protocol: http
-  port: 7103
- 
   # Max allowed time a query can run on this Datasource before manual time out
-  query_timeout: 600
-  host: product.mydomain.net
-  
-  # You can set username here. But to set password securely please run:
+  query_timeout: 3600
+
+  # Required: SQL Server host
+  host: localhost
+
+  # Optional: Port number (default: 1433)
+  port: 1433
+
+  # Required: Database name
+  database: mydb
+
+  # Required: Username for connection
+  username: sa
+
+  # Optional: Flag for Azure SQL Server (default: false)
+  azure: false
+
+  # You can set password here. But to set password securely please run:
   # `strata ds auth <%= @ds_key %>`
   # This command will save your credentials to the .strata global or local file.
-  # username:
-  #
+  # password:
+
   # Extra connection properties will forward these along when
-  # connecting to your druid server.
+  # connecting to your SQL Server.
   # extra_connection_params:
-  #   trustStore: /path/to/trustStore
-
-  # Extra query params will forward these params when executing a 
-  # query against your druid servers:
-  # extra_query_params:
-  #   headers:
-  #     X-DRUID-AUTHOR: ${current_user_name}
-  #     X-DRUID-COMMENT: STRATA CLI
-
+  #   encrypt: true
+  #   trust_server_certificate: true

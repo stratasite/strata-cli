@@ -25,20 +25,25 @@ module Strata::CLI
       def create_datasources_file
         template "datasources.yml", "#{uid}/datasources.yml"
 
-        options[:datasource].each do |ds|
-          AddDs.new([ds.downcase.strip], options.merge({"path" => uid})).invoke_all
+        if options.key?(:datasource)
+          options[:datasource].each do |ds|
+            raise "Unsupported datasource #{ds}" unless DWH.adapters?(ds.to_sym)
+            AddDs.new([ds.downcase.strip], options.merge({"path" => uid})).invoke_all
+          end
+        else
+          AddDs.new(["snowflake"], options.merge({"path" => uid})).invoke_all
         end
       end
 
       def initialize_git
         inside uid do
-          run "git init", verbose: false
+          run "git init", verbose: false, capture: true
           create_file ".gitignore", ".strata\n"
         end
       end
 
       def completion_message
-        say_status "Initialized Strata project: #{uid}", :green
+        say_status :done, "Initialized Strata project: #{uid}", :yellow
       end
 
       private

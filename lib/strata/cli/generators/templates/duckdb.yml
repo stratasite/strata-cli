@@ -1,0 +1,36 @@
+# Datasource key should be unique in the Project
+<%= @ds_key %>:
+  # This is the display name of this datasource
+  name: MYDATASOURCENAME
+  # Optional description to provide more information in the UI
+  description: This DS is the hot tier of our Product Domain
+
+  # Required. Should be one of hot, warm, or cold. Helps the Query engine
+  # prioritize a datasource when multiple can handle the request.
+  tier: hot
+
+  # A valid supported adapter
+  adapter: duckdb
+ 
+  # default client name sent to the db
+  client_name: Strata
+
+  # Max allowed time a query can run on this Datasource before manual time out
+  query_timeout: 600
+
+  # Required: Path to the DuckDB database file
+  file: /path/to/your/duckdb/database.db
+
+  # Optional: Schema name (default: main)
+  # schema: main
+
+  # Optional: DuckDB configuration parameters
+  # These are passed directly to the DuckDB connection
+  # duck_config:
+  #   access_mode: READ_WRITE
+  #   memory_limit: 1GB
+  #   threads: 4
+
+  # Note: DuckDB is an in-process analytical database
+  # No network configuration required (host/port/etc.)
+  # File path can be relative or absolute

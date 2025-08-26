@@ -1,4 +1,4 @@
 # This will define all the data warehouses that
 # are availalbe to this project.  Each connection should
-# use one of these Adapters: <%= Strata::ADAPTERS.join(",") %>
+# use one of these Adapters: <%= DWH.adapters.keys.join(",") %>
 

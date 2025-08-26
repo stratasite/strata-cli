@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name = "strata-cli"
   spec.version = Strata::CLI::VERSION
   spec.authors = ["Ajo Abraham"]
-  spec.email = ["heyajo81@gmail.com"]
+  spec.email = ["ajo@strata.site"]
 
   spec.summary = "CLI to for the Strata Semantic Analytics System."
   spec.description = "CLI tool to interact with your Strata servers. Create new projects and deploy them."
@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "thor", "~> 1.3.2"
+  spec.add_dependency "dwh", "~> 0.1.0"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

@@ -1,29 +1,45 @@
 # Datasource key should be unique in the Project
 <%= @ds_key %>:
-  # This is the display namem of this datasource
-  name: MySQL DB
+  # This is the display name of this datasource
+  name: MYDATASOURCENAME
   # Optional description to provide more information in the UI
-  # description: My awesome data warehouse
-  
+  description: This DS is the warm tier of our Product Domain
+
   # Required. Should be one of hot, warm, or cold. Helps the Query engine
-  # priortize a datasource when multiple can handle the request.
-  tier: cold
+  # prioritize a datasource when multiple can handle the request.
+  tier: warm 
+
   # A valid supported adapter
   adapter: mysql
-  
+ 
+  # default client name sent to the db
+  client_name: Strata
+
   # Max allowed time a query can run on this Datasource before manual time out
   query_timeout: 3600
-  host: localhost
-  # port: 3306 
-  # ssl: false 
+
+  # Required: MySQL server host (use 127.0.0.1 for local Docker instances)
+  host: 127.0.0.1
+
+  # Optional: Port number (default: 3306)
+  port: 3306
+
+  # Required: Database name
   database: mydb
-  
-  # You can set username here. But to set password securely please run:
+
+  # Required: Username for connection
+  username: root
+
+  # Optional: Enable SSL (default: false)
+  ssl: false
+
+  # You can set password here. But to set password securely please run:
   # `strata ds auth <%= @ds_key %>`
   # This command will save your credentials to the .strata global or local file.
-  # username:
-  
+  # password:
+
   # Extra connection properties will forward these along when
-  # connecting to your mysql server.
+  # connecting to your MySQL server.
   # extra_connection_params:
-  #   charset: utf8mb4
+  #   ssl_mode: REQUIRED
+  #   connect_timeout: 10

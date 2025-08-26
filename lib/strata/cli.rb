@@ -1,5 +1,5 @@
-# frozen_string_literal: true
-
+require "thor"
+require "dwh"
 require_relative "cli/version"
 require_relative "cli/configuration"
 require_relative "cli/main"

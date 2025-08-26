@@ -1,37 +1,56 @@
 # Datasource key should be unique in the Project
 <%= @ds_key %>:
-  # This is the display namem of this datasource
-  name: Trino DWH
+  # This is the display name of this datasource
+  name: MYDATASOURCENAME
   # Optional description to provide more information in the UI
-  description: Isolated instance to provide exclusive access to CS BPO vendors
+  description: This DS is the hot tier of our Product Domain
 
   # Required. Should be one of hot, warm, or cold. Helps the Query engine
-  # priortize a datasource when multiple can handle the request.
-  tier: warm
+  # prioritize a datasource when multiple can handle the request.
+  tier: cold
+
   # A valid supported adapter
   adapter: trino
-  
+ 
+  # default client name sent to the db
+  client_name: Strata
+
   # Max allowed time a query can run on this Datasource before manual time out
-  query_timeout: 600
-  host: trino.mydomain.net
-  port: 7004
-  ssl: true 
-  # sslmode: prefer
-  catalog: wh_catalog
-  # Default schema when connecting. Tables can have fully qualified names
-  # to use alternative schema like: othercat.otherschema.table_name
-  schema: dwh
-  
-  # You can set username here. But to set password securely please run:
+  query_timeout: 3600
+
+  # Required: Trino server host
+  host: localhost
+
+  # Optional: Port number (default: 8080)
+  port: 8080
+
+  # Required: Catalog to connect to
+  catalog: native
+
+  # Required: Username for connection
+  username: strata_user
+
+  # Optional: Schema name
+  # schema: default
+
+  # Optional: Enable SSL (default: false)
+  ssl: false
+
+  # You can set password here. But to set password securely please run:
   # `strata ds auth <%= @ds_key %>`
   # This command will save your credentials to the .strata global or local file.
-  # username:
-  
-  # Extra connection properties will forward these along when
-  # connecting to your druid server.
-  # extra_connection_params:
-  #   source: ${strata_client_name} 
-  #   clientInfo:
-  #     version: ${strata_client_version}
-  #     actualUser: ${strata_current_user_name}
+  # password:
 
+  # Extra connection properties will forward these along when
+  # connecting to your Trino server.
+  # extra_connection_params:
+  #   verify: false
+  #   headers:
+  #     X-Custom-Header: value
+
+  # Extra query params will forward these params when executing a 
+  # query against your Trino servers:
+  # extra_query_params:
+  #   headers:
+  #     X-TRINO-USER: ${current_user_name}
+  #     X-TRINO-SOURCE: STRATA CLI

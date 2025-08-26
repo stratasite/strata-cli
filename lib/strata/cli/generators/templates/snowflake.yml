@@ -1,35 +1,69 @@
 # Datasource key should be unique in the Project
 <%= @ds_key %>:
-  # This is the display namem of this datasource
-  name: Snowflake DWH
+  # This is the display name of this datasource
+  name: MYDATASOURCENAME
   # Optional description to provide more information in the UI
-  description: Our awesome snowflake Data Warehouse 
+  description: This DS is the hot tier of our Product Domain
+
   # Required. Should be one of hot, warm, or cold. Helps the Query engine
-  # priortize a datasource when multiple can handle the request.
+  # prioritize a datasource when multiple can handle the request.
   tier: warm
+
   # A valid supported adapter
   adapter: snowflake
-  
+ 
+  # default client name sent to the db
+  client_name: Strata
+
   # Max allowed time a query can run on this Datasource before manual time out
   query_timeout: 3600
-  protocol: https
-  host: mydomain.snowflake-computing.net
-  ssl: true 
-  warehouse: SNOWFLAKE_WAREHOUSE_XL
-  database: SNOWFLAKE_DB
-  schema: SNOWFLAKE_SCHEMA
-  role: SNOWFLAKE_ROLE
-  
-  # Auth modes: oauth, private_key, password
-  auth_mode: oauth
-  # You can set username here. But to set password securely please run:
+
+  # Required: Your Snowflake account identifier (e.g., myorg-myaccount.us-east-1)
+  account_identifier: myorg-myaccount
+
+  # Required: Database name
+  database: ANALYTICS_DB
+
+  # Optional: Warehouse name
+  warehouse: COMPUTE_WH
+
+  # Optional: Schema name
+  schema: PUBLIC
+
+  # Optional: Role name
+  role: ACCOUNTADMIN
+
+  # Required: Authentication mode - one of: pat, kp, oauth
+  # pat: personal_access_token
+  # kp: key pair (requires username)
+  # oauth: OAuth (requires setup on snowflake to enable)
+  #   Additional required params
+  #   oauth_client_id: <MYCLIENTID>
+  #   oauth_cleint_secret: <MYCLIENTSECRET>
+  #   oauth_redirect_uri: https://localhost:3420/callback
+  #   oauth_scope: <SCOPE> # optional
+  auth_mode: pat
+
+  # For Personal Access Token (PAT) authentication:
+  # You can set personal_access_token here. But to set securely please run:
   # `strata ds auth <%= @ds_key %>`
   # This command will save your credentials to the .strata global or local file.
-  # These files are default ignored in .gitignore
-  # username:
-  
-  # Extra connection properties will forward these along when
-  # connecting to your druid server.
-  # extra_connection_params:
-  #   application: ${strata_client_name} 
-  #   client_session_keep_alive: true
+  # personal_access_token:
+
+  # For Key Pair (KP) authentication, uncomment and set:
+  # username: john_doe
+  # private_key: /path/to/private_key.pem
+
+  # For OAuth authentication, additional setup required.
+  # https://docs.snowflake.com/en/user-guide/oauth-custom
+  #
+  # Securely save tokens in .strata by running:
+  #   `strata ds auth <%= @ds_key %>`
+  #
+  # This would only work if your snowflake setup allows modification
+  # of the redirect url. Otherwise, you can get access_token and 
+  # refresh_token by other means. Then add it to .strata like so:
+  #
+  # access_token: wrwerjwrljwer
+  # refresh_token: erwerewrwer
+  # expires_at: <%= Time.now %>
