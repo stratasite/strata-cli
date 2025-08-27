@@ -18,4 +18,5 @@ server: http://localhost:3030
 #
 #
 # Credentials here are stored per datasource. These credentials
-# should be set via `strata ds auth -d your_ds`
+# should be set via `strata ds auth DS_KEY`. DS_KEY should match the datasouces 
+# yaml node key for the datasource you are trying to update.

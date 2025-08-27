@@ -6,9 +6,11 @@ require_relative "cli/main"
 require_relative "cli/utils"
 
 module Strata
-  module CLI
-    class Error < StandardError; end
+  class StrataError < StandardError; end
 
+  class ConfigError < StrataError; end
+
+  module CLI
     @configuration = Configuration.new
     def self.config
       @configuration
