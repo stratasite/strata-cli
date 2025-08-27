@@ -15,7 +15,7 @@ module Strata
 
       attr_reader :data
       def initialize
-        @data = {}
+        @data = DEFAULT.merge({})
         load_config
       end
 
@@ -72,7 +72,7 @@ module Strata
       private
 
       def load_config
-        raise ConfigError, "Not a valid Strata project" unless strata_project?
+        return unless strata_project?
         @data = DEFAULT.merge(YAML.load_file(config_file_path))
 
         @api_key = @data["api_key"]
