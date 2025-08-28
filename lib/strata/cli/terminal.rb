@@ -58,7 +58,7 @@ module Strata
           column_widths << [header_width, data_width].max
         end
 
-        # Table overhead: 4 for outer borders + 3 per column separator
+        # Table overhead: 2 for outer borders + 1 per column separator
         table_overhead = 2 + (column_widths.length - 1) * 1
         # Add 2 chars padding per column (space on each side)
         total_padding = column_widths.length * 2
