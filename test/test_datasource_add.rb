@@ -28,7 +28,7 @@ class TestDatasourceAdd < Minitest::Test
   end
 
   def test_add_postgres_datasource_success
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "postgres"])
+    Strata::CLI::Main.start(["ds", "add", "postgres"])
 
     # Verify datasource was added to file
     datasources_content = File.read("datasources.yml")
@@ -38,7 +38,7 @@ class TestDatasourceAdd < Minitest::Test
   end
 
   def test_add_snowflake_datasource_success
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "snowflake"])
+    Strata::CLI::Main.start(["ds", "add", "snowflake"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "snowflake:"
@@ -47,7 +47,7 @@ class TestDatasourceAdd < Minitest::Test
   end
 
   def test_add_mysql_datasource_success
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "mysql"])
+    Strata::CLI::Main.start(["ds", "add", "mysql"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "mysql:"
@@ -55,7 +55,7 @@ class TestDatasourceAdd < Minitest::Test
   end
 
   def test_add_datasource_with_alias_flag
-    Strata::CLI::Main.start(["ds", "add", "-a", "postgres"])
+    Strata::CLI::Main.start(["ds", "add", "postgres"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "postgres:"
@@ -63,7 +63,7 @@ class TestDatasourceAdd < Minitest::Test
 
   def test_add_unsupported_adapter_shows_error
     output = capture_io do
-      Strata::CLI::Main.start(["ds", "add", "--adapter", "unsupported_adapter"])
+      Strata::CLI::Main.start(["ds", "add", "unsupported_adapter"])
     end
 
     error_output = output.join
@@ -77,10 +77,10 @@ class TestDatasourceAdd < Minitest::Test
 
   def test_add_multiple_datasources_creates_unique_keys
     # Add first postgres datasource
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "postgres"])
+    Strata::CLI::Main.start(["ds", "add", "postgres"])
 
     # Add second postgres datasource
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "postgres"])
+    Strata::CLI::Main.start(["ds", "add", "postgres"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "postgres:"
@@ -95,7 +95,7 @@ class TestDatasourceAdd < Minitest::Test
     # Mock gem installation
     Strata::CLI::Generators::AddDs.define_method(:install_duckdb_gem) { true }
 
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "duckdb"])
+    Strata::CLI::Main.start(["ds", "add", "duckdb"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "duckdb:"
@@ -105,7 +105,7 @@ class TestDatasourceAdd < Minitest::Test
     Strata::CLI::Generators::AddDs.define_method(:duckdb_installed?, original_method)
   end
 
-  def test_add_without_adapter_option_fails
+  def test_add_without_adapter_argument_fails
     assert_raises(SystemExit) do
       Strata::CLI::Main.start(["ds", "add"])
     end
@@ -121,7 +121,7 @@ class TestDatasourceAdd < Minitest::Test
     YAML
     File.write("datasources.yml", initial_content)
 
-    Strata::CLI::Main.start(["ds", "add", "--adapter", "mysql"])
+    Strata::CLI::Main.start(["ds", "add", "mysql"])
 
     datasources_content = File.read("datasources.yml")
     assert_includes datasources_content, "existing_ds:"

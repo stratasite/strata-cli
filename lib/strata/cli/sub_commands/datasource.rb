@@ -1,5 +1,6 @@
 require_relative "../guard"
 require_relative "../credentials"
+require_relative "../terminal"
 
 module Strata
   module CLI
@@ -7,11 +8,14 @@ module Strata
       class Datasource < Thor
         include Thor::Actions
         include Guard
+        include Terminal
 
         desc "adapters", "Lists supported data warehouse adapters"
         def adapters
-          out = "\nSUPPORTED ADAPTERS: \n\t#{DWH.adapters.keys.join("\n\t")}"
-          say out, :magenta
+          say "\n\tSupported Adapters\n\n", :yellow
+          DWH.adapters.keys.each do
+            say "\t\t● #{it}", :magenta
+          end
         end
 
         desc "list", "List current configured datasources by key and name"
@@ -22,11 +26,18 @@ module Strata
           say out, :magenta
         end
 
-        desc "add", "Add a new datasource for specific data warehouse adapter"
-        method_option :adapter, aliases: ["a"], type: :string, required: true, desc: "One of the supported data warehouse adapters."
+        desc "add [ADAPTER]", "Add a new datasource for [ADAPTER]"
+        long_desc <<-LONGDESC
+          Example: add a new datasource for postgres:
+
+              strata ds add postgres
+
+          Example: add a new datasource for mysql with key csops_db:
+
+            strata ds add postgres -k csops_db
+        LONGDESC
         method_option :key, aliases: ["k"], type: :string, required: false, desc: "Unique key to identify this datasource"
-        def add
-          adapter = options[:adapter]
+        def add(adapter)
           name = options[:key]
 
           unless DWH.adapters.key?(adapter.to_sym)
@@ -36,7 +47,7 @@ module Strata
           end
 
           require_relative "../generators/add_ds"
-          generator = Strata::CLI::Generators::AddDs.new([adapter, name], options)
+          generator = Generators::AddDs.new([adapter, name], options)
           generator.invoke_all
 
           say "Successfully added #{adapter} datasource configuration.", :green
@@ -45,10 +56,12 @@ module Strata
         desc "auth [DS_KEY]", "Set credentials for the given datasource key."
         long_desc <<-LONGDESC
           Example to set local credentials for a datasource with key games_dwh:
-            `strata ds auth games_dwh`
+
+            strata ds auth games_dwh
 
           Example to set remote credentials for the same datasource:
-            `strata ds auth games_dwh -r`
+
+            strata ds auth games_dwh -r
 
           Local credentials are saved in the projects .strata file. This will should not
           be checked into git.
@@ -72,8 +85,7 @@ module Strata
             return
           end
 
-          say "Setting up credentials for datasource '#{ds_key}' (#{adapter})", :blue
-
+          say "\nEnter credentials for #{ds_key}", :red
           creds.collect
           creds.write_local(ds_key, self)
 
@@ -82,52 +94,81 @@ module Strata
 
         desc "test [DS_KEY]", "Test connect to the given datasource."
         def test(ds_key)
-          say "\n\t● Testing #{ds_key} connection", :yellow
           adapter = create_adapter(ds_key)
-          adapter.test_connection(raise_exception: true)
-          say "\t✓ Connected!", :green
+          with_spinner("Testing #{ds_key} connection...", success_message: "Connected!",
+            failed_message: "Failed to connect.") {
+            adapter.test_connection(raise_exception: true)
+          }
         rescue => e
           say "\t!! Failed to connect: \n\t#{e.message}", :red
         end
 
         desc "tables [DS_KEY]", "List tables from [DS_KEY] datasource"
-        method_option :pattern, aliases: "p", type: :string, desc: "Limit tables to matching pattern. Use SQL compliant % for wild matches."
+        method_option :pattern, aliases: "p", type: :string, desc: "Regex pattern to filter table list"
         method_option :catalog, aliases: "c", type: :string, desc: "Change the catalog from the configured one."
         method_option :schema, aliases: "s", type: :string, desc: "Change the schema from the configured one."
         def tables(ds_key)
-          say "\n\t● Listing #{ds_key} tables\n\n", :yellow
+          say "\nListing #{ds_key} tables...\n\n", :yellow
           adapter = create_adapter(ds_key)
           tables = adapter.tables(**options)
+          tables = tables.select { it =~ /#{options[:pattern]}/ } if options[:pattern]
+
           tables.each do
-            say "\t\t● #{it}", :magenta
+            say "\t● #{it}", :magenta
           end
 
-          say "\n\t● End of List", :yellow
+          say "\nFound #{tables.count} table(s)", :yellow
         rescue => e
           say "\n\t!!Failed: #{e.message}", :red
         end
 
-        desc "meta [DS_KEY] [TABLE_NAME]", "Show the metadata of [TABLE_NAME] in datasource [DS_KEY]."
+        desc "meta [DS_KEY] [TABLE_NAME]", "Show the structure of [TABLE_NAME] in datasource [DS_KEY]."
         method_option :catalog, aliases: "c", type: :string, desc: "Change the catalog from the configured one."
         method_option :schema, aliases: "s", type: :string, desc: "Change the schema from the configured one."
         def meta(ds_key, table_name)
-          say "\n● #{table_name}(#{ds_key}):\n\n", :yellow
+          say "\n● Schema for table: #{table_name} (#{ds_key}):\n", :yellow
           adapter = create_adapter(ds_key)
           md = adapter.metadata(table_name, **options.transform_keys { it.to_sym })
 
-          say "\t #{md.to_h}", :magenta
+          headings = md.columns.first.to_h.keys
+          rows = md.columns.map(&:to_h).map(&:values)
+
+          say print_table(rows, headers: headings, color: :yellow)
         rescue => e
           say "\n\t!!Failed: #{e.message}", :red
         end
 
-        desc "exec", "Run the given query"
-        method_option :datasource, aliases: "d", type: :string, required: true, desc: "One of the datasource keys from datasources.yml"
-        method_option :table, aliases: "q", type: :string, required: true, desc: "SQL query or path to query file."
-        method_option :database, aliases: "b", type: :string, desc: "Change the database from the configured one."
-        method_option :catalog, aliases: "c", type: :string, desc: "Change the catalog from the configured one."
-        method_option :schema, aliases: "s", type: :string, desc: "Change the schema from the configured one."
-        def exec
-          say options
+        desc "exec [DS_KEY] -q \"select * from my_table\"", "Run the given query or queries on [DS_KEY]"
+        long_desc <<-LONGDESC
+          Example: run a single query inline on csops_db 
+
+          strata ds exec csops_db -q "select * from customer limit 10;"
+
+          Example: run queries from a file 
+
+          strata ds exec csops_db -f path/to/my/file.sql
+        LONGDESC
+        method_option :query, aliases: "q", type: :string, desc: "Inline SQL query"
+        method_option :file, aliases: "f", type: :string, desc: "SQL query from file"
+        def exec(ds_key)
+          adapter = create_adapter(ds_key)
+          if options[:file]
+            queries = File.read(options[:file]).split(";").reject { it.nil? || it.strip == "" }
+          elsif options[:query]
+            queries = options[:query].split(";").reject { it.nil? || it.strip == "" }
+          else
+            raise StrataError, "Either a file (-f) or a query (-q) should b submitted."
+          end
+
+          queries.each_with_index do |query, index|
+            puts ""
+            res = with_spinner("running #{index + 1}/#{queries.length} queries...") {
+              adapter.execute(query, format: :object)
+            }
+            print_table(res.map(&:values), headers: res.first.keys)
+          end
+        rescue => e
+          say "\n\t!!Failed: #{e.message}", :red
         end
 
         private
