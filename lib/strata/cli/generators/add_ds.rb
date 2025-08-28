@@ -23,7 +23,7 @@ module Strata
           say_status :adapter, "adding #{adapter} template to datasources", :yellow
 
           # Process template in memory without creating temp file
-          template_content = render_template("#{adapter}.yml")
+          template_content = render_template("adapters/#{adapter}.yml")
           append_to_file pathify("datasources.yml"), "\n#{template_content}"
         end
 
