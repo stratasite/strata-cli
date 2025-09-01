@@ -15,7 +15,7 @@ module Strata
         say VERSION
       end
 
-      desc "init PROJECT_NAME", "Initializes a new Strata project."
+      desc "init PROJECT", "Initializes a new Strata project named PROJECT."
       option :datasource, aliases: ["d"], type: :string, desc: "One of the supported data warehouse adapters.",
         repeatable: true
       def init(project_name)

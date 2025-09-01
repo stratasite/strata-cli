@@ -26,7 +26,7 @@ module Strata
           say out, :magenta
         end
 
-        desc "add [ADAPTER]", "Add a new datasource for [ADAPTER]"
+        desc "add ADAPTER", "Add a new datasource for ADAPTER"
         long_desc <<-LONGDESC
           Example: add a new datasource for postgres:
 
@@ -53,7 +53,7 @@ module Strata
           say "Successfully added #{adapter} datasource configuration.", :green
         end
 
-        desc "auth [DS_KEY]", "Set credentials for the given datasource key."
+        desc "auth DS_KEY", "Set credentials for the given datasource key (DS_KEY)."
         long_desc <<-LONGDESC
           Example to set local credentials for a datasource with key games_dwh:
 
@@ -92,7 +92,7 @@ module Strata
           say "Credentials saved successfully to .strata file.", :green
         end
 
-        desc "test [DS_KEY]", "Test connect to the given datasource."
+        desc "test DS_KEY", "Test connect to the given datasource."
         def test(ds_key)
           adapter = create_adapter(ds_key)
           with_spinner("Testing #{ds_key} connection...", success_message: "Connected!",
@@ -103,7 +103,7 @@ module Strata
           say "\t!! Failed to connect: \n\t#{e.message}", :red
         end
 
-        desc "tables [DS_KEY]", "List tables from [DS_KEY] datasource"
+        desc "tables DS_KEY", "List tables from DS_KEY datasource"
         method_option :pattern, aliases: "p", type: :string, desc: "Regex pattern to filter table list"
         method_option :catalog, aliases: "c", type: :string, desc: "Change the catalog from the configured one."
         method_option :schema, aliases: "s", type: :string, desc: "Change the schema from the configured one."
@@ -122,7 +122,7 @@ module Strata
           say "\n\t!!Failed: #{e.message}", :red
         end
 
-        desc "meta [DS_KEY] [TABLE_NAME]", "Show the structure of [TABLE_NAME] in datasource [DS_KEY]."
+        desc "meta DS_KEY TABLE_NAME", "Show the structure of TABLE_NAME in datasource DS_KEY."
         method_option :catalog, aliases: "c", type: :string, desc: "Change the catalog from the configured one."
         method_option :schema, aliases: "s", type: :string, desc: "Change the schema from the configured one."
         def meta(ds_key, table_name)
@@ -138,7 +138,7 @@ module Strata
           say "\n\t!!Failed: #{e.message}", :red
         end
 
-        desc "exec [DS_KEY] -q \"select * from my_table\"", "Run the given query or queries on [DS_KEY]"
+        desc "exec DS_KEY -q \"select * from my_table\"", "Run the given query or queries on DS_KEY"
         long_desc <<-LONGDESC
           Example: run a single query inline on csops_db 
 

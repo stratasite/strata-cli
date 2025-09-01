@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "terminal-table"
   spec.add_dependency "tty-spinner"
   spec.add_dependency "pastel"
+  spec.add_dependency "tty-prompt"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
